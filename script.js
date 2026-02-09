@@ -10,6 +10,9 @@ const tileCount = canvas.width / tileSize
 let dx = 0
 let dy = 0
 
+let score =0
+let gameRunning = true
+
 let snake = [
     { x: 10, y: 10 }, { x: 9, y: 10 }, { x: 8, y: 10 }
 ]
@@ -60,12 +63,16 @@ function gameLoop() {
 
     aiDecision()
     moveSnake()
+
     checkFoodColision()
+    checkSelfCollision()
+    checkWallCollision()
+
     drawSnake()
     drawFood()
     drawNeuralNetwork()
 
-    
+
 }
 
 function moveSnake() {
@@ -138,6 +145,7 @@ function checkFoodColision() {
     const head = snake[0]
 
     if (head.x === food.x && head.y === food.y) {
+        score++
         spawnFood()
         growSnake()
     }
@@ -156,6 +164,30 @@ function spawnFood() {
 
     }
 }
+
+function checkSelfCollision() {
+    const head = snake[0]
+    for (let i = 1; i < snake.length; i++) {
+        if (head.x === snake[i].x && head.y === snake[i].y) {
+            gameOver()
+        }
+    }
+}
+
+function checkWallCollision() {
+    const head = snake[0]
+
+    if (head.x < 0 || head.x >= tileCount || head.y < 0 || head.y >= tileCount) {
+        gameOver()
+    }
+}
+
+function gameOver(){
+    gameRunning = false
+
+    alert(`Game Over! \n\n Score: ${score}`)
+}
+
 
 
 setInterval(gameLoop, 200)
