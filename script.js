@@ -1,10 +1,13 @@
 const canvas = document.getElementById("game")
 const ctx = canvas.getContext("2d")
 
+const nnCanvas = document.getElementById("nn")
+const nnCtx = nnCanvas.getContext("2d")
+
 const tileSize = 20
 const tileCount = canvas.width / tileSize
 
-let dx = 1
+let dx = 0
 let dy = 0
 
 let snake = [
@@ -55,10 +58,11 @@ function drawFood() {
 function gameLoop() {
     ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-
+    aiDecision()
     moveSnake()
     drawSnake()
     drawFood()
+    drawNeuralNetwork
 }
 
 function moveSnake() {
@@ -71,7 +75,67 @@ function moveSnake() {
     snake.pop()
 }
 
-setInterval(gameLoop,200)
+function aiDecision() {
+    const head = snake[0]
+
+    if (food.x > head.x) {
+        dx = 1
+        dy = 0
+    } else if (food.x < head.x) {
+        dx = -1
+        dy = 0
+    } else if (food.y > head.y) {
+        dx = 0
+        dy = 1
+    } else if (food.y < head.y) {
+        dx = 0
+        dy = -1
+    }
+}
+
+function drawNeuralNetwork() {
+    nnCtx.clearRect(0, 0, nnCanvas.width, nnCanvas.height)
+
+    const inputs = [
+        food.x - snake[0].x,
+        food.y - snake[0].y
+    ]
+
+    const outputs = {
+        left: inputs[0] < 0 ? Math.abs(inputs[0]) : 0,
+        right: inputs[0] > 0 ? inputs[0] : 0,
+        up: inputs[0] < 0 ? Math.abs(inputs[1]) : 0,
+        down: inputs[0] > 0 ? inputs[1] : 0
+    }
+
+    nnCtx.fillStyle = "cyan"
+    nnCtx.fillText("Input X: " + inputs[0], 20, 40)
+    nnCtx.fillText("Input Y: " + inputs[1], 20, 70)
+
+    nnCtx.fillStyle = "yellow"
+    let y = 40
+    for(let key in outputs){
+        nnCtx.fillText(`%{key}: ${outputs[key]}`, 220,y)
+        y+=30
+    }
+
+
+    nnCtx.strokeStyle = "#444"
+    nnCtx.beginPath()
+    nnCtx.moveTo(100,50)
+    nnCtx.lineTo(200,50)
+    nnCtx.moveTo(100,80)
+    nnCtx.lineTo(200,110)
+    nnCtx.stroke()
+
+
+}
+
+
+
+
+
+setInterval(gameLoop, 200)
 drawGrid()
 ctx.clearRect(0, 0, canvas.width, canvas.height)
 drawSnake()

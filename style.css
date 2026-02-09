@@ -1,11 +1,17 @@
-body{
+body {
     background: #111;
     color: white;
     text-align: center;
-    font-family: Arial,sans-serif;
+    font-family: Arial, sans-serif;
 }
 
-canvas{
+canvas {
     background: #000;
     border: 2px solid #0f0;
+}
+
+#nn {
+    margin-top: 20px;
+    background: #111;
+    border: 1px solid #555;
 }
