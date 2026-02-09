@@ -60,9 +60,12 @@ function gameLoop() {
 
     aiDecision()
     moveSnake()
+    checkFoodColision()
     drawSnake()
     drawFood()
-    drawNeuralNetwork
+    drawNeuralNetwork()
+
+    
 }
 
 function moveSnake() {
@@ -114,25 +117,45 @@ function drawNeuralNetwork() {
 
     nnCtx.fillStyle = "yellow"
     let y = 40
-    for(let key in outputs){
-        nnCtx.fillText(`%{key}: ${outputs[key]}`, 220,y)
-        y+=30
+    for (let key in outputs) {
+        nnCtx.fillText(`%{key}: ${outputs[key]}`, 220, y)
+        y += 30
     }
 
 
     nnCtx.strokeStyle = "#444"
     nnCtx.beginPath()
-    nnCtx.moveTo(100,50)
-    nnCtx.lineTo(200,50)
-    nnCtx.moveTo(100,80)
-    nnCtx.lineTo(200,110)
+    nnCtx.moveTo(100, 50)
+    nnCtx.lineTo(200, 50)
+    nnCtx.moveTo(100, 80)
+    nnCtx.lineTo(200, 110)
     nnCtx.stroke()
 
 
 }
 
+function checkFoodColision() {
+    const head = snake[0]
 
+    if (head.x === food.x && head.y === food.y) {
+        spawnFood()
+        growSnake()
+    }
+}
 
+function growSnake() { //Laele
+
+    const tail = snake[snake.length - 1]
+    snake.push({ x: tail.x, y: tail.y })
+}
+
+function spawnFood() {
+    food = {
+        x: Math.floor(Math.random() * tileCount),
+        y: Math.floor(Math.random() * tileCount)
+
+    }
+}
 
 
 setInterval(gameLoop, 200)
