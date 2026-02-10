@@ -103,18 +103,27 @@ function aiDecision() {
 
     const head = snake[0]
 
+    let newDx = dx
+    let newDy = dy
+
     if (food.x > head.x) {
-        dx = 1
-        dy = 0
+        newDx = 1
+        newDy = 0
     } else if (food.x < head.x) {
-        dx = -1
-        dy = 0
+        newDx = -1
+        newDy = 0
     } else if (food.y > head.y) {
-        dx = 0
-        dy = 1
+        newDx = 0
+        newDy = 1
     } else if (food.y < head.y) {
-        dx = 0
-        dy = -1
+        newDx = 0
+        newDy = -1
+    }
+
+    if(!isOppositeDirection(newDx, newDy)){
+        
+        dx = newDx
+        dy= newDy
     }
 }
 
@@ -227,6 +236,11 @@ function resetGame() {
     gameRunning = true
     gameLoop()
 
+}
+
+function isOppositeDirection(newDx, newDy){
+    
+    return dx === -newDx && dy === -newDy
 }
 
 
