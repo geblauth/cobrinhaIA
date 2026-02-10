@@ -7,20 +7,16 @@ const nnCtx = nnCanvas.getContext("2d")
 const tileSize = 20
 const tileCount = canvas.width / tileSize
 
-let dx = 0
-let dy = 0
+let dx
+let dy
 
-let score =0
+let snake
+
+
+let food
+let score
 let gameRunning = true
 
-let snake = [
-    { x: 10, y: 10 }, { x: 9, y: 10 }, { x: 8, y: 10 }
-]
-
-let food = {
-    x: 15, y: 10
-
-}
 
 function drawGrid() {
     ctx.strokeStyle = "#222"
@@ -37,6 +33,8 @@ function drawGrid() {
 }
 
 function drawSnake() {
+    if (!snake) return
+
     ctx.fillStyle = "lime"
     snake.forEach(part => {
         ctx.fillRect(
@@ -49,6 +47,8 @@ function drawSnake() {
 }
 
 function drawFood() {
+    if (!food) return
+
     ctx.fillStyle = "red"
     ctx.fillRect(
         food.x * tileSize,
@@ -59,23 +59,36 @@ function drawFood() {
 }
 
 function gameLoop() {
+    if (!gameRunning || !snake || !food) return
+
     ctx.clearRect(0, 0, canvas.width, canvas.height)
 
     aiDecision()
     moveSnake()
-
-    checkFoodColision()
-    checkSelfCollision()
     checkWallCollision()
-
+    checkSelfCollision()
+    checkFoodColision()
     drawSnake()
     drawFood()
     drawNeuralNetwork()
+    
+    
+    
+
+
+
+
+
+
+
+
 
 
 }
 
 function moveSnake() {
+if(!snake || snake.length ===0) return
+
     const head = {
         x: snake[0].x + dx,
         y: snake[0].y + dy
@@ -86,6 +99,8 @@ function moveSnake() {
 }
 
 function aiDecision() {
+    if (!food || snake.length === 0 || !snake) return
+
     const head = snake[0]
 
     if (food.x > head.x) {
@@ -104,6 +119,8 @@ function aiDecision() {
 }
 
 function drawNeuralNetwork() {
+
+
     nnCtx.clearRect(0, 0, nnCanvas.width, nnCanvas.height)
 
     const inputs = [
@@ -182,17 +199,40 @@ function checkWallCollision() {
     }
 }
 
-function gameOver(){
+function gameOver() {
     gameRunning = false
 
     alert(`Game Over! \n\n Score: ${score}`)
+    resetGame()
+
+}
+
+function resetGame() {
+
+    snake = [
+        { x: 10, y: 10 },
+        { x: 9, y: 10 },
+        { x: 8, y: 10 }
+    ]
+    food = {
+        x: Math.floor(Math.random() * tileCount),
+        y: Math.floor(Math.random() * tileCount)
+
+    }
+
+    dx = 1
+    dy = 0
+
+    score = 0
+    gameRunning = true
+    gameLoop()
+
 }
 
 
 
 setInterval(gameLoop, 200)
-drawGrid()
 ctx.clearRect(0, 0, canvas.width, canvas.height)
-drawSnake()
-drawFood()
+resetGame();
+setInterval(gameLoop, 200);
 
